@@ -1,5 +1,5 @@
 #include "mbed.h"
-#define version "3.5" // affiche un nombre voulu sur un SAA1064 avec un MBED NPC1768
+#define version "4.0 - Freebox" // affichage Freebox en initialisation sur un SAA1064 avec un MBED NPC1768
 
 Serial pc(USBTX, USBRX);
 I2C i2c(p28, p27); // SDA, SCL 
@@ -11,24 +11,52 @@ int main()
    pc.printf("\n Version = %s \n",version); // Affiche la version du programme sur l'ordinateur (lisible via Putty, HyperTerminal  ou TeraTerm)
    wait(1);
    
-                    // 0      1       2      3      4      5      6       7     8      9
-   char chiffre[] = { 0x3F , 0x06 , 0x5B , 0x4F , 0x66 , 0x6D ,  0x7D , 0x07 , 0x7F, 0x6F};
-     
-   int nombre = 243; // Nombre Choisit par l'utilisateur.
-   int unite = 0, dixaine = 0, centaine = 0, millier = 0;
-   
+
    while(1) 
    {
-        millier = nombre / 1000;  // 0
-        centaine = (nombre % 1000) / 100; // 2
-        dixaine = (nombre % 100) / 10; // 4
-        unite = nombre % 10; // 3
-
-        char cmd_autre[] = {0x00,0x37,chiffre[millier],chiffre[centaine],chiffre[dixaine],chiffre[unite]}; // Commande complete pour faire afficher le chiffre voulu (243).
+        // boucle d'affichage lors de l'initialisation de la Freebox.
+        char cmd1[] = {0x00,0x37,0x01,0x0,0x0,0x0}; 
+        char cmd2[] = {0x00,0x37,0x0,0x01,0x0,0x0};
+        char cmd3[] = {0x00,0x37,0x0,0x0,0x01,0x0}; 
+        char cmd4[] = {0x00,0x37,0x0,0x0,0x0,0x01}; 
+        char cmd5[] = {0x00,0x37,0x0,0x0,0x0,0x02};
+        char cmd6[] = {0x00,0x37,0x0,0x0,0x0,0x04};
+        char cmd7[] = {0x00,0x37,0x0,0x0,0x0,0x08};
+        char cmd8[] = {0x00,0x37,0x0,0x0,0x08,0x0};
+        char cmd9[] = {0x00,0x37,0x0,0x08,0x0,0x0};
+        char cmd10[] = {0x00,0x37,0x08,0x0,0x0,0x0};
+        char cmd11[] = {0x00,0x37,0x10,0x0,0x0,0x0};
+        char cmd12[] = {0x00,0x37,0x20,0x0,0x0,0x0};
         
-        i2c.write(0x70,cmd_autre,6); // envoie sur le SAA Nouvelle Génération et sur l'ancien : Car Switch entre les 2. 
-        // i2c.write(0x72,cmd,6); // envoie sur le SAA1064 ancienne génération.
-
+        int i;
+        for(i=0;i<12;i++)
+        {
+            i2c.write(0x70,cmd1,6); // envoie sur le SAA Nouvelle Génération et sur l'ancien : Car Switch entre les 2. 
+            wait(0.5);
+            i2c.write(0x70,cmd2,6);
+            wait(0.5);
+            i2c.write(0x70,cmd3,6);
+            wait(0.5);
+            i2c.write(0x70,cmd4,6);
+            wait(0.5);
+            i2c.write(0x70,cmd5,6);
+            wait(0.5);
+            i2c.write(0x70,cmd6,6);
+            wait(0.5);  
+            i2c.write(0x70,cmd7,6);
+            wait(0.5);  
+            i2c.write(0x70,cmd8,6);
+            wait(0.5);  
+            i2c.write(0x70,cmd9,6);
+            wait(0.5);  
+            i2c.write(0x70,cmd10,6);
+            wait(0.5);  
+            i2c.write(0x70,cmd11,6);
+            wait(0.5);  
+            i2c.write(0x70,cmd12,6);
+            wait(0.5);        
+        }
+        
         wait(1);
    }
 }
